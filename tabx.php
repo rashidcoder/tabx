@@ -17,98 +17,148 @@ Domain Path: /languages
 // 4) add same margin/padding between last bird and gallery,
 // as it's between first bird and filter -> photo attached
 
+function loadStylesandScripts()
+{
 
-function test($attr)
+    wp_enqueue_style('tabx-css',  plugin_dir_url(__FILE__) . 'css/tabx.css');
+    // wp_enqueue_script('semantic-ui-script',  plugin_dir_url(__FILE__) .  'js/semantic.min.js', ['jquery'], '', true);
+}
+add_action('wp_enqueue_scripts', 'loadStylesandScripts');
+
+function catView($attr)
 { ?>
 
-
-    <style>
-        .tabx {
-            width: 100% !important;
-            max-width: -webkit-fill-available !important;
-            text-align: center;
-        }
-
-        .tabx .tab {
-            border: 2px solid transparent;
-            width: 20%;
-            box-shadow: 3px 6px 20px #ccc;
-            display: inline-block;
-            background-color: white;
-            margin: 15px;
-            cursor: pointer;
-            border-radius: 10px;
-            transition-property: border-color;
-            transition-duration: 0.3s;
-            -moz-transition-property: border-color;
-            -moz-transition-duration: 0.3s;
-            -webkit-transition-property: border-color;
-            -webkit-transition-duration: 0.3s;
-            -o-transition-property: border-color;
-            -o-transition-duration: 0.3s;
-            -ms-transition-property: border-color;
-            -ms-transition-duration: 0.3s;
-            -ms-transition-timing-function: ease-out;
-            -webkit-transition-timing-function: ease-out;
-            -moz-transition-timing-function: ease-out;
-            -o-transition-timing-function: ease-out;
-            transition-timing-function: ease-out;
-        }
-
-        .tabx .tab:hover {
-
-            border: 2px solid #2f8dba;
-        }
-
-        .tabx .the-image img {
-            border-radius: 10px;
-        }
-
-        .tabx .the-label h3 {
-            font-weight: 500;
-            color: #000000;
-            font-size: 17px;
-            line-height: 25px;
-        }
-
-        .tabx .the-link {
-            text-align: center;
-            padding-bottom: 10px;
-        }
-
-        .tabx .the-link a {
-            color: #2f8dba;
-            text-decoration: none;
-        }
-    </style>
     <div class="tabx" id="<?php echo $attr['id']; ?>">
 
         <?php
-            $cats =  explode(',', $attr['categories']);
-            foreach ($cats as $key => $value) { ?>
 
-            <!-- single tab -->
-            <div class="tab">
-                <div class="the-image"> <img src="https://peak.begaak.com/wp-content/uploads/2019/11/img1.jpg" alt=""></div>
-                <div class="the-label">
-                    <h3><?php echo $value; ?></h3>
+            $cats = getCategories();
+            // $cats =  explode(',', $attr['categories']);
+            // foreach ($cats as $key => $value) { 
+
+            foreach ($cats as $cat) {
+                if ($cat->category_parent == 0) { ?>
+                <!-- single tab -->
+                <div class="tab">
+                    <div class="the-image"> <?php getCatImg($cat->term_id); ?> </div>
+                    <div class="the-label">
+                        <h3><?php echo $cat->name; ?></h3>
+                    </div>
+                    <div class="the-link"><a>Plačiau <i class="fa fa-long-arrow-right"></i></a></div>
                 </div>
-                <div class="the-link"><a>Plačiau <i class="fa fa-long-arrow-right"></i></a></div>
-            </div>
-            <!-- single tab ends -->
+                <!-- single tab ends -->
 
-        <?php }
 
+
+        <?php productView($cat->slug);
+                }
+            }
+            ?>
+
+
+
+        <?php
+            // }
             ?>
 
 
 
     </div>
 
-<?php
-    # code...
 
-    // print_r($attr);
+<?php  }
+
+
+function productView($slug)
+{
+    // Get shirts.
+    $args = array(
+        'category' => array($slug),
+    );
+    $products = wc_get_products($args);
+   
+    echo `length of products`. sizeof($products);
+    
+    foreach ($products as $product) { ?>
+  <!-- print_r($product->category_ids[0])  -->
+   
+     
+    <?php }
+   
+    ?>
+
+    <script type="text/javascript">
+        var products = <?php echo json_encode($products); ?>;
+        window['products'] = products;
+    </script>
+
+<?php }
+
+function getCategories()
+{
+
+
+    $taxonomy     = 'product_cat';
+    $orderby      = 'name';
+    $show_count   = 0;      // 1 for yes, 0 for no
+    $pad_counts   = 0;      // 1 for yes, 0 for no
+    $hierarchical = 1;      // 1 for yes, 0 for no  
+    $title        = '';
+    $empty        = 0;
+
+    $args = array(
+        'taxonomy'     => $taxonomy,
+        'orderby'      => $orderby,
+        'show_count'   => $show_count,
+        'pad_counts'   => $pad_counts,
+        'hierarchical' => $hierarchical,
+        'title_li'     => $title,
+        'hide_empty'   => $empty
+    );
+    $all_categories = get_categories($args);
+    // print_r($all_categories);
+    ?>
+    <script type="text/javascript">
+        var cats = <?php echo json_encode($all_categories); ?>;
+        window['cats'] = cats;
+    </script>
+<?php
+    return $all_categories;
+    // foreach ($all_categories as $cat) {
+    //     if ($cat->category_parent == 0) {
+    // $category_id = $cat->term_id;
+    // print_r($cat);
+    // echo '<br /><a href="' . get_term_link($cat->slug, 'product_cat') . '">' . $cat->name . '</a>';
+    // echo getCatImg($cat->term_id);
+    // $args2 = array(
+    //     'taxonomy'     => $taxonomy,
+    //     'child_of'     => 0,
+    //     'parent'       => $category_id,
+    //     'orderby'      => $orderby,
+    //     'show_count'   => $show_count,
+    //     'pad_counts'   => $pad_counts,
+    //     'hierarchical' => $hierarchical,
+    //     'title_li'     => $title,
+    //     'hide_empty'   => $empty
+    // );
+    // $sub_cats = get_categories($args2);
+    // if ($sub_cats) {
+    //     foreach ($sub_cats as $sub_category) {
+    //         echo  $sub_category;
+    //     }
+    // }
+    //     }
+    // }
 }
 
-add_shortcode('doit', 'test');
+function getCatImg($term_id)
+{
+
+    $cat_thumb_id = get_woocommerce_term_meta($term_id, 'thumbnail_id', true);
+    $cat_thumb_url = wp_get_attachment_url($cat_thumb_id);
+    ?>
+    <img src="<?php echo $cat_thumb_url; ?>" />
+<?php
+}
+
+add_shortcode('doit', 'catView');
