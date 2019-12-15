@@ -21,144 +21,128 @@ function loadStylesandScripts()
 {
 
     wp_enqueue_style('tabx-css',  plugin_dir_url(__FILE__) . 'css/tabx.css');
-    // wp_enqueue_script('semantic-ui-script',  plugin_dir_url(__FILE__) .  'js/semantic.min.js', ['jquery'], '', true);
+    wp_enqueue_script('tabx-script',  plugin_dir_url(__FILE__) .  'js/tabx.js', ['jquery'], '', true);
 }
 add_action('wp_enqueue_scripts', 'loadStylesandScripts');
 
-function catView($attr)
+function get_cat_view($attrs)
 { ?>
 
-    <div class="tabx" id="<?php echo $attr['id']; ?>">
+    <div class="tabx tabx-category" id="<?php echo $attrs['id']; ?>">
 
         <?php
 
-            $cats = getCategories();
-            // $cats =  explode(',', $attr['categories']);
-            // foreach ($cats as $key => $value) { 
+            $json_data = json_decode($attrs['categories']);
 
-            foreach ($cats as $cat) {
-                if ($cat->category_parent == 0) { ?>
-                <!-- single tab -->
-                <div class="tab">
-                    <div class="the-image"> <?php getCatImg($cat->term_id); ?> </div>
-                    <div class="the-label">
-                        <h3><?php echo $cat->name; ?></h3>
-                    </div>
-                    <div class="the-link"><a>Plačiau <i class="fa fa-long-arrow-right"></i></a></div>
+            foreach ($json_data as $cat => $target) {
+                $cat = get_term_by('slug', trim($cat), 'product_cat');
+                ?>
+
+
+            <!-- single tab -->
+            <div class="tab" onClick="scrollToTarget('<?php echo $target; ?>','<?php echo $attrs['id']; ?>')">
+                <div class="the-image"> <?php getCatImg($cat->term_id); ?> </div>
+                <div class="the-label">
+                    <h3><?php echo $cat->name; ?></h3>
                 </div>
-                <!-- single tab ends -->
+                <div class="the-link"><a>Plačiau <i class="fa fa-long-arrow-right"></i></a></div>
+            </div>
+            <!-- single tab -->
+        <?php
+
+            } ?>
+    </div>
+<?php
+}
 
 
+function get_product_view($attrs)
+{   ?>
+    <div class="tabx tabx-product" id="<?php echo $attrs['id']; ?>">
+        <div class="tabx-close" onclick="tabxClose('<?php echo $attrs['id']; ?>')">
+            <div>x</div>
+        </div>
+        <?php
+            $json_data = json_decode($attrs['ids']);
+// print_r($json_data);
+           
+            foreach ($json_data as $post_id => $details_html_id) {
+                $post = get_post(trim($post_id)); //123 will be the id of product
 
-        <?php productView($cat->slug);
-                }
+                ?>
+
+
+            <!-- single tab -->
+            <div class="tab" onClick="scrollToTarget('<?php echo $details_html_id; ?>','<?php echo $attrs['id']; ?>')">
+                <div class="the-image"> <?php getProductImg($post->ID); ?> </div>
+                <div class="the-label">
+                    <h3><?php echo $post->post_title; ?></h3>
+                </div>
+                <div class="the-link"><a>Plačiau <i class="fa fa-long-arrow-right"></i></a></div>
+            </div>
+            <!-- single tab -->
+        <?php
+
             }
             ?>
 
+    </div>
+<?php
 
+}
 
-        <?php
-            // }
-            ?>
+function get_details($attrs)
+{   ?>
+    <div class="tabx tabx-details" id="<?php echo $attrs['id']; ?>">
+        <div class="tabx-close" onclick="tabxClose('<?php echo $attrs['id']; ?>')">
+            <div>x</div>
+        </div>
 
+        <!-- single tab -->
+        <div class="tab-content">
+
+            <div class="the-content">
+                <?php
+                    $query = get_post($attrs['post_id']);
+                    $content = apply_filters('the_content', $query->post_content);
+                    echo $content;
+                    ?>
+            </div>
+        </div>
 
 
     </div>
-
-
-<?php  }
-
-
-function productView($slug)
-{
-    // Get shirts.
-    $args = array(
-        'category' => array($slug),
-    );
-    $products = wc_get_products($args);
-   
-    echo `length of products`. sizeof($products);
-    
-    foreach ($products as $product) { ?>
-  <!-- print_r($product->category_ids[0])  -->
-   
-     
-    <?php }
-   
-    ?>
-
-    <script type="text/javascript">
-        var products = <?php echo json_encode($products); ?>;
-        window['products'] = products;
-    </script>
-
-<?php }
-
-function getCategories()
-{
-
-
-    $taxonomy     = 'product_cat';
-    $orderby      = 'name';
-    $show_count   = 0;      // 1 for yes, 0 for no
-    $pad_counts   = 0;      // 1 for yes, 0 for no
-    $hierarchical = 1;      // 1 for yes, 0 for no  
-    $title        = '';
-    $empty        = 0;
-
-    $args = array(
-        'taxonomy'     => $taxonomy,
-        'orderby'      => $orderby,
-        'show_count'   => $show_count,
-        'pad_counts'   => $pad_counts,
-        'hierarchical' => $hierarchical,
-        'title_li'     => $title,
-        'hide_empty'   => $empty
-    );
-    $all_categories = get_categories($args);
-    // print_r($all_categories);
-    ?>
-    <script type="text/javascript">
-        var cats = <?php echo json_encode($all_categories); ?>;
-        window['cats'] = cats;
-    </script>
 <?php
-    return $all_categories;
-    // foreach ($all_categories as $cat) {
-    //     if ($cat->category_parent == 0) {
-    // $category_id = $cat->term_id;
-    // print_r($cat);
-    // echo '<br /><a href="' . get_term_link($cat->slug, 'product_cat') . '">' . $cat->name . '</a>';
-    // echo getCatImg($cat->term_id);
-    // $args2 = array(
-    //     'taxonomy'     => $taxonomy,
-    //     'child_of'     => 0,
-    //     'parent'       => $category_id,
-    //     'orderby'      => $orderby,
-    //     'show_count'   => $show_count,
-    //     'pad_counts'   => $pad_counts,
-    //     'hierarchical' => $hierarchical,
-    //     'title_li'     => $title,
-    //     'hide_empty'   => $empty
-    // );
-    // $sub_cats = get_categories($args2);
-    // if ($sub_cats) {
-    //     foreach ($sub_cats as $sub_category) {
-    //         echo  $sub_category;
-    //     }
-    // }
-    //     }
-    // }
-}
 
+} ?>
+
+
+
+<?php
+
+ 
 function getCatImg($term_id)
 {
 
     $cat_thumb_id = get_woocommerce_term_meta($term_id, 'thumbnail_id', true);
     $cat_thumb_url = wp_get_attachment_url($cat_thumb_id);
+    if ($cat_thumb_url == "") {
+        $cat_thumb_url = "https://i0.wp.com/aakp.org/wp-content/uploads/woocommerce-placeholder.png?resize=1024%2C1024&ssl=1";
+    }
     ?>
     <img src="<?php echo $cat_thumb_url; ?>" />
 <?php
 }
 
-add_shortcode('doit', 'catView');
+function getProductImg($id)
+{
+    $image = wp_get_attachment_image_src(get_post_thumbnail_id($id), 'single-post-thumbnail');
+
+    ?>
+    <img src="<?php echo $image[0]; ?>" data-id="<?php echo $id; ?>">
+<?php
+}
+
+add_shortcode('get_cats', 'get_cat_view');
+add_shortcode('get_products', 'get_product_view');
+add_shortcode('get_details', 'get_details');

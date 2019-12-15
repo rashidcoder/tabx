@@ -1,0 +1,33 @@
+  :: get categories by slug
+ $cat = get_term_by('slug', trim($cat), 'product_cat');
+
+  :: get products by post eg. post =125, you can find it in edit product 
+$post = get_post(trim($post_id)); //123 will be the id of product
+
+  :: get posts details
+$query = get_post($attrs['post_id']);
+$content = apply_filters('the_content', $query->post_content);
+echo $content;
+
+:: get all product categories
+    $taxonomy     = 'product_cat';
+    $orderby      = 'name';
+    $show_count   = 0;      // 1 for yes, 0 for no
+    $pad_counts   = 0;      // 1 for yes, 0 for no
+    $hierarchical = 1;      // 1 for yes, 0 for no  
+    $title        = '';
+    $empty        = 0;
+
+    $args = array(
+        'taxonomy'     => $taxonomy,
+        'orderby'      => $orderby,
+        'show_count'   => $show_count,
+        'pad_counts'   => $pad_counts,
+        'hierarchical' => $hierarchical,
+        'title_li'     => $title,
+        'hide_empty'   => $empty
+    );
+
+    $all_categories = get_categories($args);
+
+               
