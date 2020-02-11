@@ -14,12 +14,13 @@
     display: inline-block;
 }
 
-.tabx-close>div {
+.tabx-close div.close {
     background: #2f8dba;
     color: white;
     width: 35px;
     height: 35px;
     padding: 10px;
+    padding-top: 6px;
     border-radius: 60px;
     display: flex;
     align-items: center;
@@ -56,6 +57,16 @@
     transition-timing-function: ease-out;
 }
 
+.tabx .tabx-product .tab {
+width:17%;
+}
+
+.tabx .slick-slide .tab {
+    width: 90% !important;
+    margin: 15px;
+    flex-direction: column;
+}
+
 .tabx .tab-content {
     width: 80%;
     box-shadow: 3px 6px 20px #ccc;
@@ -77,6 +88,8 @@
 
 .tabx .the-image img {
     border-radius: 10px;
+    max-height: 200px;
+    min-height: 200px;
 }
 
 .tabx .the-label h3 {
@@ -84,6 +97,10 @@
     color: #000000;
     font-size: 17px;
     line-height: 25px;
+    height: 70px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .tabx .the-link {
@@ -94,4 +111,112 @@
 .tabx .the-link a {
     color: #2f8dba;
     text-decoration: none;
+}
+
+.tabx.tabx-product.show {
+    display: block;
+}
+
+.tabx-product.show .tabx-close {
+    display: none;
+}
+
+.tabx-details .vc_icon_element-icon.fa.fa-times-circle {
+    display: none;
+    visibility: hidden;
+}
+
+.grid-title {
+    display: flex;
+    justify-content: space-between;
+}
+
+.grid-title h3 {
+    color: #000000;
+    font-size: 36px;
+    padding: 0;
+    font-weight: 400;
+    font-family: Roboto, sans-serif;
+    margin: 0px;
+}
+
+.tabx .tab-content:hover {
+    border: none !important;
+}
+
+@media (max-width: 2560px) {
+    .tabx .tab {
+        width: 20% !important;
+    }
+.tabx.tabx-category ~ .tabx .tabx-close + div > .tab {
+    width: 18% !important;
+}
+}
+
+.slideshow.slick-initialized.slick-slider {
+    display: flex;
+}
+
+.slick-initialized.slick-slider {
+    display: flex;
+}
+
+.slick-slider a.porto-sicon-read.xx {
+    text-align: center;
+    margin: 0 auto;
+    width: 100%;
+}
+
+.porto-ultimate-content-box {
+    display: flex;
+}
+
+.slick-slide>div>div {
+    display: flex !important;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+}
+
+.slideshow .tab {
+    float: left;
+}
+
+.clearboth {
+    clear: both;
+}
+
+button.slick-arrow {
+    background-color: transparent;
+    cursor: pointer;
+}
+
+.slick-slider .slick-next {
+    padding: 10px;
+}
+
+.fa-arrow-left:before {
+    color: #2f8dba;
+}
+
+.slick-list.draggable {
+    margin: 0 auto;
+}
+
+.header-slides {
+    box-shadow: 3px 6px 20px #4a4a4a;
+}
+
+.header-slides .slick-slider {
+    padding: 20px;
+}
+
+ 
+
+@media(max-width: 640px) {
+    .bg-white1 {
+        padding: 0px;
+        margin: 0px;
+        width: -webkit-fill-available;
+    }
 }

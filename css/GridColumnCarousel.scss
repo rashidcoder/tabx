@@ -1,0 +1,30 @@
+.grid-column-carousel {
+  overflow: hidden;
+}
+
+.grid-column-carousel__list {
+  transition: transform 0.5s ease-in-out;
+  transform: translateX(0);
+  
+  
+  //clearfix styling
+  &:after, &:before {
+    content: ' '; /* 1 */
+    display: table; /* 2 */
+  }
+  &:after {
+    clear: both;
+  }
+  
+  &.initialized {
+    width: 9999px;
+
+    > * {
+      display: block;
+    }
+  }
+  
+  > * {
+    display: none;  
+  }
+}
