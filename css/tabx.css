@@ -88,8 +88,12 @@ width:17%;
 
 .tabx .the-image img {
     border-radius: 10px;
+<<<<<<< HEAD
     max-height: 200px;
     min-height: 200px;
+=======
+    max-height: 250px;
+>>>>>>> 70dfc8970d4f56d19d7cc29801d0e46ac6beb1b0
 }
 
 .tabx .the-label h3 {
